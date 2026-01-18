@@ -2,7 +2,12 @@
 
 import os
 from dotenv import load_dotenv
-load_dotenv()
+
+dotenv_path = os.getenv("DOTENV_PATH")
+if dotenv_path:
+    load_dotenv(dotenv_path)
+else:
+    load_dotenv()
 
 # ════════════════════════════════════════════════════════════════════════════════
 # ░ CONFIGURATION SETTINGS
@@ -24,6 +29,11 @@ API_HASH     = os.getenv("API_HASH", "")
 BOT_TOKEN    = os.getenv("BOT_TOKEN", "")
 MONGO_DB     = os.getenv("MONGO_DB", "")
 DB_NAME      = os.getenv("DB_NAME", "telegram_downloader")
+
+# SESSION NAMES (for multi-bot on same host)
+TELETHON_SESSION = os.getenv("TELETHON_SESSION", "telethonbot")
+PYRO_SESSION     = os.getenv("PYRO_SESSION", "pyrogrambot")
+USERBOT_SESSION  = os.getenv("USERBOT_SESSION", "4gbbot")
 
 # ─── OWNER / CONTROL SETTINGS ───────────────────────────────────────────────────
 OWNER_ID     = list(map(int, os.getenv("OWNER_ID", "8185612154").split()))  # space-separated list

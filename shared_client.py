@@ -1,12 +1,20 @@
 
 from telethon import TelegramClient
-from config import API_ID, API_HASH, BOT_TOKEN, STRING
+from config import (
+    API_ID,
+    API_HASH,
+    BOT_TOKEN,
+    STRING,
+    TELETHON_SESSION,
+    PYRO_SESSION,
+    USERBOT_SESSION,
+)
 from pyrogram import Client
 import sys
 
-client = TelegramClient("telethonbot", API_ID, API_HASH)
-app = Client("pyrogrambot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
-userbot = Client("4gbbot", api_id=API_ID, api_hash=API_HASH, session_string=STRING)
+client = TelegramClient(TELETHON_SESSION, API_ID, API_HASH)
+app = Client(PYRO_SESSION, api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
+userbot = Client(USERBOT_SESSION, api_id=API_ID, api_hash=API_HASH, session_string=STRING)
 
 async def start_client():
     if not client.is_connected():
