@@ -28,7 +28,7 @@ API_ID       = os.getenv("API_ID", "")
 API_HASH     = os.getenv("API_HASH", "")
 BOT_TOKEN    = os.getenv("BOT_TOKEN", "")
 MONGO_DB     = os.getenv("MONGO_DB", "")
-DB_NAME      = os.getenv("DB_NAME", "")
+DB_NAME      = os.getenv("DB_NAME", "telegram_downloader")
 
 # SESSION NAMES (for multi-bot on same host)
 TELETHON_SESSION = os.getenv("TELETHON_SESSION", "telethonbot")
