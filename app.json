@@ -93,7 +93,7 @@
     },
     "ADMIN_CONTACT": {
       "description": "type admin contact link",
-      "value": "https://t.me/kingofpatal",
+      "value": "https://t.me/eurnyme",
       "required": true
     },
     "JOIN_LINK": {
