@@ -398,6 +398,36 @@ async def is_premium_user(user_id):
         return False
 
 
+async def check_and_increment_free_batch_limit(user_id: int, daily_limit: int) -> bool:
+    """
+    Returns True if the user can run a free /batch and increments the counter.
+    """
+    if daily_limit <= 0:
+        return False
+
+    today = datetime.utcnow().date().isoformat()
+    doc = await users_collection.find_one({"user_id": user_id}) or {}
+    last_date = doc.get("free_batch_date")
+    count = int(doc.get("free_batch_count", 0))
+
+    if last_date != today:
+        count = 0
+
+    if count >= daily_limit:
+        return False
+
+    await users_collection.update_one(
+        {"user_id": user_id},
+        {
+            "$set": {"free_batch_date": today},
+            "$setOnInsert": {"user_id": user_id},
+            "$inc": {"free_batch_count": 1},
+        },
+        upsert=True,
+    )
+    return True
+
+
 async def get_premium_details(user_id):
     try:
         user = await premium_users_collection.find_one({"user_id": user_id})

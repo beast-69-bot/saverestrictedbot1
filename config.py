@@ -2,12 +2,7 @@
 
 import os
 from dotenv import load_dotenv
-
-dotenv_path = os.getenv("DOTENV_PATH")
-if dotenv_path:
-    load_dotenv(dotenv_path)
-else:
-    load_dotenv()
+load_dotenv()
 
 # ════════════════════════════════════════════════════════════════════════════════
 # ░ CONFIGURATION SETTINGS
@@ -28,12 +23,7 @@ API_ID       = os.getenv("API_ID", "")
 API_HASH     = os.getenv("API_HASH", "")
 BOT_TOKEN    = os.getenv("BOT_TOKEN", "")
 MONGO_DB     = os.getenv("MONGO_DB", "")
-DB_NAME      = os.getenv("DB_NAME", "telegram_downloader")
-
-# SESSION NAMES (for multi-bot on same host)
-TELETHON_SESSION = os.getenv("TELETHON_SESSION", "telethonbot")
-PYRO_SESSION     = os.getenv("PYRO_SESSION", "pyrogrambot")
-USERBOT_SESSION  = os.getenv("USERBOT_SESSION", "4gbbot")
+DB_NAME      = os.getenv("DB_NAME", "")
 
 # ─── OWNER / CONTROL SETTINGS ───────────────────────────────────────────────────
 OWNER_ID     = list(map(int, os.getenv("OWNER_ID", "8185612154").split()))  # space-separated list
@@ -42,8 +32,8 @@ LOG_GROUP    = int(os.getenv("LOG_GROUP", "-1005228054904"))
 FORCE_SUB    = int(os.getenv("FORCE_SUB", "-1003571680513"))
 
 # ─── SECURITY KEYS ──────────────────────────────────────────────────────────────
-MASTER_KEY   = os.getenv("MASTER_KEY", "")  # session encryption
-IV_KEY       = os.getenv("IV_KEY", "")  # decryption key
+MASTER_KEY   = os.getenv("MASTER_KEY", "gK8HzLfT9QpViJcYeB5wRa3DmN7P2xUq")  # session encryption
+IV_KEY       = os.getenv("IV_KEY", "s7Yx5CpVmE3F")  # decryption key
 
 # ─── COOKIES HANDLING ───────────────────────────────────────────────────────────
 YT_COOKIES   = os.getenv("YT_COOKIES", YTUB_COOKIES)
@@ -52,6 +42,7 @@ INSTA_COOKIES = os.getenv("INSTA_COOKIES", INST_COOKIES)
 # ─── USAGE LIMITS ───────────────────────────────────────────────────────────────
 FREEMIUM_LIMIT = int(os.getenv("FREEMIUM_LIMIT", "69"))
 PREMIUM_LIMIT  = int(os.getenv("PREMIUM_LIMIT", "500000"))
+FREE_BATCH_DAILY_LIMIT = int(os.getenv("FREE_BATCH_DAILY_LIMIT", "5"))
 
 # ─── UI / LINKS ─────────────────────────────────────────────────────────────────
 JOIN_LINK     = os.getenv("JOIN_LINK", "https://t.me/az_bots_solution")
@@ -83,7 +74,7 @@ P0 = {
 }
 
 # ════════════════════════════════════════════════════════════════════════════════
-# ░ DEVGAGAN
+# ░ az bots solution - 2024
 # ════════════════════════════════════════════════════════════════════════════════
 
 

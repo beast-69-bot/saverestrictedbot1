@@ -10,8 +10,8 @@ from typing import Dict, Any, Optional, Set, Tuple
 from pyrogram import Client, filters
 from pyrogram.types import Message
 
-from config import API_ID, API_HASH, LOG_GROUP, STRING, FORCE_SUB, FREEMIUM_LIMIT, PREMIUM_LIMIT
-from utils.func import get_user_data, screenshot, thumbnail, get_video_metadata
+from config import API_ID, API_HASH, LOG_GROUP, STRING, FORCE_SUB, FREEMIUM_LIMIT, PREMIUM_LIMIT, FREE_BATCH_DAILY_LIMIT
+from utils.func import get_user_data, screenshot, thumbnail, get_video_metadata, check_and_increment_free_batch_limit
 from utils.func import cleanup_temp_file, cleanup_temp_images
 from utils.func import get_user_data_key, process_text_with_rules, is_premium_user, E
 from shared_client import app as X
@@ -486,6 +486,12 @@ async def process_cmd(c: Client, m: Message):
     if FREEMIUM_LIMIT == 0 and not await is_premium_user(uid):
         await m.reply_text("This bot does not provide free servies, get subscription from OWNER")
         return
+
+    if cmd == "batch" and not await is_premium_user(uid):
+        ok = await check_and_increment_free_batch_limit(uid, FREE_BATCH_DAILY_LIMIT)
+        if not ok:
+            await m.reply_text(f"Free users can use /batch only {FREE_BATCH_DAILY_LIMIT} times per day.")
+            return
 
     if await sub(c, m) == 1:
         return
