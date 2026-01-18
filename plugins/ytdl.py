@@ -117,7 +117,7 @@ async def process_audio(client, event, url, cookies_env_var=None):
             temp_cookie_path = temp_cookie_file.name
  
     start_time = time.time()
-    random_filename = f"@team_spy_pro_{event.sender_id}"
+    random_filename = f"@eurnyme_{event.sender_id}"
     download_path = f"{random_filename}.mp3"
  
     ydl_opts = {
