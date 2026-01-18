@@ -81,6 +81,16 @@
       "value": "500",
       "required": false
     },
+    "SHORTLINK_SITE": {
+      "description": "Shortener domain without https/www (e.g., upshrink.com)",
+      "value": "",
+      "required": false
+    },
+    "SHORTLINK_API": {
+      "description": "API key for the shortener service",
+      "value": "",
+      "required": false
+    },
     "ADMIN_CONTACT": {
       "description": "type admin contact link",
       "value": "https://t.me/kingofpatal",
