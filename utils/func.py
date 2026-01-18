@@ -224,6 +224,58 @@ async def process_text_with_rules(user_id, text):
         return text
 
 
+def _is_user_thumbnail_path(path: str, sender: str | int | None = None) -> bool:
+    if not path:
+        return False
+    base = os.path.basename(path)
+    if base == "settings.jpg":
+        return True
+    if sender is not None and base == f"{sender}.jpg":
+        return True
+    if re.fullmatch(r"\d+\.jpg", base):
+        return True
+    return False
+
+
+def cleanup_temp_file(path: str | None, sender: str | int | None = None) -> None:
+    if not path:
+        return
+    if _is_user_thumbnail_path(path, sender):
+        return
+    try:
+        if os.path.exists(path):
+            os.remove(path)
+    except Exception:
+        pass
+
+
+def cleanup_temp_images(directory: str = ".", max_age_hours: int = 24) -> int:
+    removed = 0
+    cutoff = time.time() - (max_age_hours * 3600)
+    try:
+        for name in os.listdir(directory):
+            if not name.lower().endswith(".jpg"):
+                continue
+            full = os.path.join(directory, name)
+            if not os.path.isfile(full):
+                continue
+            if _is_user_thumbnail_path(full):
+                continue
+            try:
+                mtime = os.path.getmtime(full)
+            except Exception:
+                continue
+            if mtime < cutoff:
+                try:
+                    os.remove(full)
+                    removed += 1
+                except Exception:
+                    pass
+    except Exception:
+        pass
+    return removed
+
+
 async def screenshot(video: str, duration: int, sender: str) -> str | None:
     existing_screenshot = f"{sender}.jpg"
     if os.path.exists(existing_screenshot):

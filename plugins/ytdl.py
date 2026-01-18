@@ -14,7 +14,7 @@ from shared_client import client, app
 from telethon import events
 from telethon.sync import TelegramClient
 from telethon.tl.types import DocumentAttributeVideo
-from utils.func import get_video_metadata, screenshot
+from utils.func import get_video_metadata, screenshot, cleanup_temp_file
 from telethon.tl.functions.messages import EditMessageRequest
 from devgagantools import fast_upload
 from concurrent.futures import ThreadPoolExecutor
@@ -359,6 +359,7 @@ async def process_video(client, event, url, cookies_env_var, check_duration_and_
         await event.reply(telegram_block_text())
         return
 
+    thumb_for_cleanup = None
     start_time = time.time()
     logger.info(f"Received link: {url}")
 
@@ -424,6 +425,7 @@ async def process_video(client, event, url, cookies_env_var, check_duration_and_
             THUMB = thumbnail_file
         else:
             THUMB = await screenshot(download_path, metadata['duration'], event.sender_id)
+        thumb_for_cleanup = THUMB
 
         chat_id = event.chat_id
         SIZE = 2 * 1024 * 1024 * 1024  # ✅ 2GB
@@ -472,6 +474,7 @@ async def process_video(client, event, url, cookies_env_var, check_duration_and_
             os.remove(temp_cookie_path)
         if thumbnail_file and os.path.exists(thumbnail_file):
             os.remove(thumbnail_file)
+        cleanup_temp_file(thumb_for_cleanup, event.sender_id)
  
 
 async def split_and_upload_file(app, sender, file_path, caption):

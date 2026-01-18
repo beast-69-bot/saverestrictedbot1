@@ -12,6 +12,7 @@ from pyrogram.types import Message
 
 from config import API_ID, API_HASH, LOG_GROUP, STRING, FORCE_SUB, FREEMIUM_LIMIT, PREMIUM_LIMIT
 from utils.func import get_user_data, screenshot, thumbnail, get_video_metadata
+from utils.func import cleanup_temp_file, cleanup_temp_images
 from utils.func import get_user_data_key, process_text_with_rules, is_premium_user, E
 from shared_client import app as X
 from plugins.settings import rename_file
@@ -392,6 +393,7 @@ async def process_msg(bot_client: Client, user_client: Client, msg: Message, did
                 os.remove(fpath)
             except Exception:
                 pass
+            cleanup_temp_file(th, uid)
             try:
                 await bot_client.delete_messages(did, pmsg.id)
             except Exception:
@@ -460,6 +462,7 @@ async def process_msg(bot_client: Client, user_client: Client, msg: Message, did
             os.remove(fpath)
         except Exception:
             pass
+        cleanup_temp_file(th, uid)
         try:
             await bot_client.delete_messages(did, pmsg.id)
         except Exception:
@@ -477,6 +480,8 @@ async def process_msg(bot_client: Client, user_client: Client, msg: Message, did
 async def process_cmd(c: Client, m: Message):
     uid = m.from_user.id
     cmd = m.command[0]
+
+    cleanup_temp_images()
 
     if FREEMIUM_LIMIT == 0 and not await is_premium_user(uid):
         await m.reply_text("This bot does not provide free servies, get subscription from OWNER")
