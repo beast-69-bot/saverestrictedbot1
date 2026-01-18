@@ -251,7 +251,7 @@ async def prog(c, t, C: Client, h: int, m: int, st: float):
                 f"⚡**__Completed__**: {c_mb:.2f} MB / {t_mb:.2f} MB\n"
                 f"📊 **__Done__**: {p:.2f}%\n"
                 f"🚀 **__Speed__**: {speed:.2f} MB/s\n"
-                f"⏳ **__ETA__**: {eta}\n\n**__Powered by Team SPY__**",
+                f"⏳ **__ETA__**: {eta}\n\n**__Powered by AZ BOTS ADDA__**",
             )
             if p >= 100:
                 P.pop(m, None)

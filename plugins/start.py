@@ -112,7 +112,7 @@ help_pages = [
         "• **/broadcast** - Send message to all users\n\n"
         "📜 **Legal**\n"
         "• **/terms** - Terms & Conditions\n\n"
-        "**__Powered by AZ BOTS SOLUTION__**"
+        "**__Powered by AZ BOTS ADDA__**"
     )
 ]
 async def send_or_edit_help_page(_, message, page_number):

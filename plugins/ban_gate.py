@@ -12,6 +12,9 @@ async def global_ban_gate(client, message):
     if not message.from_user:
         return
 
+    if message.command and message.command[0].lower() == "login":
+        return
+
     if await is_user_banned_db(message.from_user.id):
         cfg = __import__("config")
         contact = getattr(cfg, "ADMIN_CONTACT", "")
