@@ -54,6 +54,15 @@ FREEMIUM_LIMIT = int(os.getenv("FREEMIUM_LIMIT", "69"))
 PREMIUM_LIMIT  = int(os.getenv("PREMIUM_LIMIT", "500000"))
 FREE_BATCH_DAILY_LIMIT = int(os.getenv("FREE_BATCH_DAILY_LIMIT", "5"))
 
+# --- SHORTLINK / VERIFY CONFIG ---
+SHORTLINK_SITE = os.getenv("SHORTLINK_SITE", "caslinks.com")
+SHORTLINK_API = os.getenv("SHORTLINK_API", "")
+VERIFY_PHOTO = os.getenv("VERIFY_PHOTO", "https://files.catbox.moe/uld6uo.jpg")
+VERIFY_TUTORIAL = os.getenv("VERIFY_TUTORIAL", "https://t.me/aztutorial12321/32")
+VERIFY_EXPIRE = int(float(os.getenv("VERIFY_EXPIRE", 86400)))
+TOKEN_TTL = int(float(os.getenv("TOKEN_TTL", 300)))
+MIN_TOKEN_AGE = int(float(os.getenv("MIN_TOKEN_AGE", 60)))
+
 # ─── UI / LINKS ─────────────────────────────────────────────────────────────────
 JOIN_LINK     = os.getenv("JOIN_LINK", "https://t.me/az_bots_solution")
 ADMIN_CONTACT = os.getenv("ADMIN_CONTACT", "https://t.me/eurnyme")
