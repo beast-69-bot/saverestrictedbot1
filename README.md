@@ -2,9 +2,9 @@
   Save Restricted Content Bot v3
 </h1>
 
-The Save Restricted Content Bot is a stable Telegram bot developed by devgagan and AZ BOTS SOLUTIONS. It enables users to retrieve restricted messages from Telegram channels and groups, offering features such as custom thumbnail support and the ability to upload files up to 4GB. Additionally, the bot supports downloading videos from platforms like YouTube, Instagram, and Facebook, along with over 100 other sites
+The Save Restricted Content Bot is a stable Telegram bot developed by devgagan and AZ BOTS ADDA. It enables users to retrieve restricted messages from Telegram channels and groups, offering features such as custom thumbnail support and the ability to upload files up to 4GB. Additionally, the bot supports downloading videos from platforms like YouTube, Instagram, and Facebook, along with over 100 other sites
 
-[Telegram](https://t.me/save_restricted_content_bots) | [See Recent Updates](https://github.com/devgaganin/Save-Restricted-Content-Bot-V2/tree/v3#updates)
+AZ BOTS ADDA
 
 ### Star the repo it motivate us to update new features
 Please do start and max fork thanks 
@@ -20,7 +20,7 @@ Please do start and max fork thanks
 - Custom bot functionality added use `/setbot`
 - 128 bit encryption for data saving use @v3saverbot on telegram to generate `MASTER_KEY`, `IV_KEY`
 - Rename and forward content to other channels or users.
-- extract restricted content from other bots how to use format link like `https://botusername(without @)/message_id(get it from plus messenger)`
+- extract restricted content from other bots how to use format link like `botusername(without @)/message_id(get it from plus messenger)`
 - `/login` method along with `session` based login
 - Custom captions and thumbnails.
 - Auto-remove default video thumbnails.
@@ -70,12 +70,12 @@ Please do start and max fork thanks
 
 To run the bot, you'll need to configure a few sensitive variables. Here's how to set them up securely:
 
-- **`API_ID`**: Your API ID from [telegram.org](https://my.telegram.org/auth).
-- **`API_HASH`**: Your API Hash from [telegram.org](https://my.telegram.org/auth).
-- **`BOT_TOKEN`**: Get your bot token from [@BotFather](https://t.me/botfather).
-- **`OWNER_ID`**: Use [@missrose_bot](https://t.me/missrose_bot) to get your user ID by sending `/info`.
+- **`API_ID`**: Your API ID from telegram.org.
+- **`API_HASH`**: Your API Hash from telegram.org.
+- **`BOT_TOKEN`**: Get your bot token from @BotFather.
+- **`OWNER_ID`**: Use @missrose_bot to get your user ID by sending `/info`.
 - **`CHANNEL_ID`**: The ID of the channel for forced subscription.
-- **`LOG_GROUP`**: A group or channel where the bot logs messages. Forward a message to [@userinfobot](https://t.me/userinfobot) to get your channel/group ID.
+- **`LOG_GROUP`**: A group or channel where the bot logs messages. Forward a message to @userinfobot to get your channel/group ID.
 - **`MONGO_DB`**: A MongoDB URL for storing session data (recommended for security).
   
 ### Additional Configuration Options:
@@ -88,7 +88,7 @@ To run the bot, you'll need to configure a few sensitive variables. Here's how t
 **How to get cookies ??** : use mozila firfox if on android or use chrome on desktop and download extension get this cookie or any Netscape Cookies (HTTP Cookies) extractor and use that 
 
 ### Monetization (Optional):
-- **`WEBSITE_URL`**: (Optional) This is the domain for your monetization short link service. Provide the shortener's domain name, for example: `upshrink.com`. Do **not** include `www` or `https://`. The default link shortener is already set.
+- **`WEBSITE_URL`**: (Optional) This is the domain for your monetization short link service. Provide the shortener's domain name, for example: `upshrink.com`. Do **not** include `www` or `https`. The default link shortener is already set.
 - **`AD_API`**: (Optional) The API key from your link shortener service (e.g., **Upshrink**, **AdFly**, etc.) to monetize links. Enter the API provided by your shortener.
 
 > **Important:** Always keep your credentials secure! Never hard-code them in the repository. Use environment variables or a `.env` file.
@@ -102,15 +102,18 @@ To run the bot, you'll need to configure a few sensitive variables. Here's how t
 <details>
 <summary><b>Deploy on VPS</b></summary>
 
-1. Fork the repo.
-2. Update `config.py` with your values.
-3. Run the following:
+1. Clone the repo on your VPS.
+2. Install system packages and Python deps:
    ```bash
    sudo apt update
    sudo apt install ffmpeg git python3-pip
    git clone your_repo_link
    cd your_repo_name
    pip3 install -r requirements.txt
+   ```
+3. Set required environment variables (API_ID, API_HASH, BOT_TOKEN, OWNER_ID, MONGO_DB, FORCE_SUB, LOG_GROUP).
+4. Start the bot:
+   ```bash
    python3 main.py
    ```
 
@@ -127,9 +130,20 @@ To run the bot, you'll need to configure a few sensitive variables. Here's how t
 <details>
 <summary><b>Deploy on Heroku</b></summary>
 
-1. Fork and Star the repo.
-2. Click [![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://www.heroku.com/deploy).
-3. Enter required variables and click deploy ✅.
+1. Create a new Heroku app and set stack to container:
+   ```bash
+   heroku create your-app-name
+   heroku stack:set container -a your-app-name
+   ```
+2. Set config vars in Heroku dashboard (API_ID, API_HASH, BOT_TOKEN, OWNER_ID, MONGO_DB, FORCE_SUB, LOG_GROUP).
+3. Deploy using GitHub or CLI:
+   ```bash
+   git push heroku main
+   ```
+4. Start worker:
+   ```bash
+   heroku ps:scale worker=1 -a your-app-name
+   ```
 
 </details>
 
@@ -138,7 +152,7 @@ To run the bot, you'll need to configure a few sensitive variables. Here's how t
 
 1. Fork and star the repo.
 2. Edit `config.py` or set environment variables on Render.
-3. Go to [render.com](https://render.com), sign up/log in.
+3. Go to render.com, sign up/log in.
 4. Create a new web service, select the free plan.
 5. Connect your GitHub repo and deploy ✅.
 
@@ -192,13 +206,12 @@ Your credentials can be stolen if pushed to a public repository. Always keep the
 
 ## 🛠️ Terms of Use
 
-Visit the [Terms of Use](https://github.com/devgaganin/Save-Restricted-Content-Bot-Repo/blob/master/TERMS_OF_USE.md) page to review and accept the guidelines.
+Visit the Terms of Use page to review and accept the guidelines.
 ## Important Note
 
 **Note**: Changing the terms and commands doesn't magically make you a developer. Real development involves understanding the code, writing new functionalities, and debugging issues, not just renaming things. If only it were that easy!
 
 
 <h3 align="center">
-  Developed with ❤️ by <a href="https://t.me/eurnyme"> Gagan </a>
+  Developed with ❤️ by Gagan
 </h3>
-
