@@ -56,7 +56,7 @@ FREE_BATCH_DAILY_LIMIT = int(os.getenv("FREE_BATCH_DAILY_LIMIT", "5"))
 
 # --- SHORTLINK / VERIFY CONFIG ---
 SHORTLINK_SITE = os.getenv("SHORTLINK_SITE", "caslinks.com")
-SHORTLINK_API = os.getenv("SHORTLINK_API", "")
+SHORTLINK_API = os.getenv("SHORTLINK_API", "05b01394bd9824e3f76ff2191417922006c97dbf")
 VERIFY_PHOTO = os.getenv("VERIFY_PHOTO", "https://files.catbox.moe/uld6uo.jpg")
 VERIFY_TUTORIAL = os.getenv("VERIFY_TUTORIAL", "https://t.me/aztutorial12321/32")
 VERIFY_EXPIRE = int(float(os.getenv("VERIFY_EXPIRE", 86400)))
