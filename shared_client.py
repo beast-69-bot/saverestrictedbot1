@@ -1,5 +1,4 @@
 
-import asyncio
 from telethon import TelegramClient
 from config import (
     API_ID,
@@ -10,11 +9,6 @@ from config import (
     PYRO_SESSION,
     USERBOT_SESSION,
 )
-try:
-    asyncio.get_event_loop()
-except RuntimeError:
-    asyncio.set_event_loop(asyncio.new_event_loop())
-
 from pyrogram import Client
 import sys
 
@@ -36,3 +30,4 @@ async def start_client():
     await app.start()
     print("Pyro App Started...")
     return client, app, userbot
+
