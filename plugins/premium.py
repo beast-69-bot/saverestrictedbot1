@@ -85,18 +85,18 @@ async def start_handler(client, message):
     b9 = spy.b64decode(a10).decode()
     b10 = spy.b64decode(a11).decode()
 
+    tm = await getattr(app, b3)(b1, b2)
+
+    pb = getattr(tm, spy.b64decode(attr1.encode()).decode())
+    fd = getattr(pb, spy.b64decode(attr2.encode()).decode())
+
     kb = IKM([
         [IK(b7, url=JL)],
         [IK(b8, url=AC)]
     ])
-    try:
-        tm = await getattr(app, b3)(b1, b2)
-        pb = getattr(tm, spy.b64decode(attr1.encode()).decode())
-        fd = getattr(pb, spy.b64decode(attr2.encode()).decode())
-        await getattr(message, b4)(
-            fd,
-            caption=b6,
-            reply_markup=kb
-        )
-    except Exception:
-        await message.reply_text(b6, reply_markup=kb)
+
+    await getattr(message, b4)(
+        fd,
+        caption=b6,
+        reply_markup=kb
+    )
