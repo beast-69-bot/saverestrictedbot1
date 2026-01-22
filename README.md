@@ -39,29 +39,33 @@ Please do start and max fork thanks
 - real time download and uplaod progress, support chats, text , audio, video , video note sticker everything
 
   
-## ⚡ Commands
+## ? Commands
 
-- **`start`**: 🚀 Start the bot.
-- **`batch`**: 🫠 Extract in bulk.
-- **`login`**: 🔑 Get into the bot.
+- **`start`**: ?? Start the bot.
+- **`batch`**: ?? Extract in bulk.
 - **`single`**: Process single link.
+- **`stop`**: ?? Stop active batch.
+- **`cancel`**: ? Cancel current step/login/settings.
+- **`login`**: ?? Get into the bot.
+- **`logout`**: ?? Get out of the bot.
 - **`setbot`**: add your custome bot.
-- **`logout`**: 🚪 Get out of the bot.
-- **`adl`**: 👻 Download audio from 30+ sites.
-- **`dl`**: 💀 Download videos from 30+ sites.
-- **`transfer`**: 💘 Gift premium to others.
-- **`status`**: ⌛ Get your plan details.
-- **`add`**: ➕ Add user to premium.
-- **`rem`**: ➖ Remove user from premium.
 - **`rembot`**: remove your custome bot.
-- **`session`**: 🧵 Generate Pyrogramv2 session.
-- **`settings`**: ⚙️ Personalize settings.
-- **`stats`**: 📊 Get stats of the bot.
-- **`plan`**: 🗓️ Check our premium plans.
-- **`terms`**: 🥺 Terms and conditions.
-- **`help`**: ❓ Help if you're new.
-- **`cancel`**: 🚫 Cancel batch process.
-
+- **`settings`**: ?? Personalize settings.
+- **`adl`**: ?? Download audio from 30+ sites.
+- **`dl`**: ?? Download videos from 30+ sites.
+- **`status`**: ? Get your plan details.
+- **`plan`**: ??? Check our premium plans.
+- **`terms`**: ?? Terms and conditions.
+- **`help`**: ? Help if you're new.
+- **`pay`**: ?? Buy premium with Telegram Stars.
+- **`transfer`**: ?? Gift premium to others.
+- **`add`**: ? Add user to premium (Owner).
+- **`rem`**: ? Remove user from premium (Owner).
+- **`unban`**: ?? Unban user (Owner).
+- **`broadcast`**: ?? Broadcast message (Owner).
+- **`get`**: ?? Export user IDs (Owner).
+- **`set`**: ?? Update bot commands (Owner).
+- **`logtest`**: ?? Test log channel (Owner).
 
 ## ⚙️ Required Variables
 
