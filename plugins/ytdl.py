@@ -2,6 +2,7 @@
 import yt_dlp
 import os
 import tempfile
+import time
 import asyncio
 import random
 import string
@@ -11,8 +12,10 @@ import time
 import math
 from shared_client import client, app
 from telethon import events
+from telethon.sync import TelegramClient
 from telethon.tl.types import DocumentAttributeVideo
 from utils.func import get_video_metadata, screenshot, cleanup_temp_file
+from telethon.tl.functions.messages import EditMessageRequest
 from devgagantools import fast_upload
 from concurrent.futures import ThreadPoolExecutor
 import aiohttp 
@@ -481,7 +484,7 @@ async def split_and_upload_file(app, sender, file_path, caption):
 
     file_size = os.path.getsize(file_path)
     start = await app.send_message(sender, f"ℹ️ File size: {file_size / (1024 * 1024):.2f} MB")
-    PART_SIZE = int(1.9 * 1024 * 1024 * 1024)
+    PART_SIZE =  1.9 * 1024 * 1024 * 1024
 
     part_number = 0
     async with aiofiles.open(file_path, mode="rb") as f:
@@ -616,3 +619,4 @@ def convert(seconds: int) -> str:
     hours, remainder = divmod(seconds, 3600)
     minutes, seconds = divmod(remainder, 60)
     return f"{hours}:{minutes:02d}:{seconds:02d}"
+

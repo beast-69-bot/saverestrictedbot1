@@ -3,6 +3,7 @@
 from shared_client import client as bot_client, app
 from telethon import events
 from datetime import timedelta
+from config import OWNER_ID
 from utils.func import add_premium_user, is_private_chat
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton as IK, InlineKeyboardMarkup as IKM

@@ -3,9 +3,10 @@ from shared_client import app
 from pyrogram import filters
 from pyrogram.errors import UserNotParticipant
 from pyrogram.types import BotCommand, InlineKeyboardButton, InlineKeyboardMarkup
-from config import OWNER_ID, FORCE_SUB
+from config import LOG_GROUP, OWNER_ID, FORCE_SUB
 
 from utils.func import is_user_banned_db, save_user_data
+from utils.func import users_collection, add_premium_user
 
 async def subscribe(client, message):
     # ✅ Track user in DB (so /get shows everyone who used bot)
@@ -256,4 +257,5 @@ async def see_terms(client, callback_query):
         ]
     )
     await callback_query.message.edit_text(terms_text, reply_markup=buttons)
+
 
