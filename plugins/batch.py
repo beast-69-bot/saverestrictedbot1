@@ -229,7 +229,7 @@ async def get_msg(bot_client: Client, user_client: Optional[Client], chat_id: st
 # --------------------------------------------------------------------------
 # Progress callback (safe)
 # --------------------------------------------------------------------------
-async def prog(c, t, C: Client, h: int, m: int, st: float):
+async def prog(c, t, C: Client, h: int, m: int, st: float, mode: str = "Transferring"):
     global P
     try:
         if not t:
@@ -241,18 +241,29 @@ async def prog(c, t, C: Client, h: int, m: int, st: float):
             P[m] = step
             c_mb = c / (1024 * 1024)
             t_mb = t / (1024 * 1024)
-            bar = "🟢" * int(p / 10) + "🔴" * (10 - int(p / 10))
+            bar_done = int(p / 10)
+            bar = "▰" * bar_done + "▱" * (10 - bar_done)
             elapsed = max(time.time() - st, 0.001)
             speed = c / elapsed / (1024 * 1024)
             eta = time.strftime("%M:%S", time.gmtime((t - c) / (speed * 1024 * 1024))) if speed > 0 else "00:00"
             await C.edit_message_text(
                 h,
                 m,
-                f"__**Pyro Handler...**__\n\n{bar}\n\n"
-                f"⚡**__Completed__**: {c_mb:.2f} MB / {t_mb:.2f} MB\n"
-                f"📊 **__Done__**: {p:.2f}%\n"
-                f"🚀 **__Speed__**: {speed:.2f} MB/s\n"
-                f"⏳ **__ETA__**: {eta}\n\n**__Powered by AZ BOTS ADDA__**",
+                f"🚀 **AZ BOTS SOLUTION**  |  ⚙️ **PYRO HANDLER**\n"
+                f"━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n"
+                f"**{mode}**\n"
+                f"{bar}  {p:.2f}%\n\n"
+                f"📦 **Transferred**\n"
+                f"➜ {c_mb:.2f} MB / {t_mb:.2f} MB\n\n"
+                f"⚡ **Speed**\n"
+                f"➜ {speed:.2f} MB/s  •  Stable\n\n"
+                f"⏳ **ETA**\n"
+                f"➜ {eta}\n\n"
+                f"🧠 **Engine Status**\n"
+                f"➜ Secure • Optimized • Turbo-Ready\n\n"
+                f"━━━━━━━━━━━━━━━━━━━━━━━━━━\n"
+                f"🤖 **AZ PyroBot** v1.0.0  •  Build #102\n"
+                f"✨ **Powered by AZ BOTS SOLUTION**",
             )
             if p >= 100:
                 P.pop(m, None)
@@ -337,7 +348,7 @@ async def process_msg(bot_client: Client, user_client: Client, msg: Message, did
             msg,
             file_name=name,
             progress=prog,
-            progress_args=(bot_client, did, pmsg.id, st),
+            progress_args=(bot_client, did, pmsg.id, st, "Downloading"),
         )
 
         if not fpath or not os.path.exists(fpath):
@@ -385,7 +396,7 @@ async def process_msg(bot_client: Client, user_client: Client, msg: Message, did
                 thumb=th,
                 caption=ft if msg.caption else None,
                 progress=prog,
-                progress_args=(bot_client, did, pmsg.id, st),
+                progress_args=(bot_client, did, pmsg.id, st, "Uploading"),
                 reply_to_message_id=rtmid,
             )
             await bot_client.copy_message(did, LOG_GROUP, sent.id)
@@ -425,25 +436,25 @@ async def process_msg(bot_client: Client, user_client: Client, msg: Message, did
                     height=h,
                     duration=dur,
                     progress=prog,
-                    progress_args=(bot_client, did, pmsg.id, st),
+                    progress_args=(bot_client, did, pmsg.id, st, "Uploading"),
                     reply_to_message_id=rtmid,
                 )
             elif msg.video_note:
-                await bot_client.send_video_note(tcid, video_note=fpath, progress=prog, progress_args=(bot_client, did, pmsg.id, st), reply_to_message_id=rtmid)
+                await bot_client.send_video_note(tcid, video_note=fpath, progress=prog, progress_args=(bot_client, did, pmsg.id, st, "Uploading"), reply_to_message_id=rtmid)
             elif msg.voice:
-                await bot_client.send_voice(tcid, fpath, progress=prog, progress_args=(bot_client, did, pmsg.id, st), reply_to_message_id=rtmid)
+                await bot_client.send_voice(tcid, fpath, progress=prog, progress_args=(bot_client, did, pmsg.id, st, "Uploading"), reply_to_message_id=rtmid)
             elif msg.sticker:
                 await bot_client.send_sticker(tcid, msg.sticker.file_id, reply_to_message_id=rtmid)
             elif msg.audio or (msg.document and file_ext in audio_exts):
-                await bot_client.send_audio(tcid, audio=fpath, caption=ft if msg.caption else None, thumb=th, progress=prog, progress_args=(bot_client, did, pmsg.id, st), reply_to_message_id=rtmid)
+                await bot_client.send_audio(tcid, audio=fpath, caption=ft if msg.caption else None, thumb=th, progress=prog, progress_args=(bot_client, did, pmsg.id, st, "Uploading"), reply_to_message_id=rtmid)
             elif msg.photo:
-                await bot_client.send_photo(tcid, photo=fpath, caption=ft if msg.caption else None, progress=prog, progress_args=(bot_client, did, pmsg.id, st), reply_to_message_id=rtmid)
+                await bot_client.send_photo(tcid, photo=fpath, caption=ft if msg.caption else None, progress=prog, progress_args=(bot_client, did, pmsg.id, st, "Uploading"), reply_to_message_id=rtmid)
             elif msg.document:
-                await bot_client.send_document(tcid, document=fpath, caption=ft if msg.caption else None, progress=prog, progress_args=(bot_client, did, pmsg.id, st), reply_to_message_id=rtmid)
+                await bot_client.send_document(tcid, document=fpath, caption=ft if msg.caption else None, progress=prog, progress_args=(bot_client, did, pmsg.id, st, "Uploading"), reply_to_message_id=rtmid)
             elif msg.text:
                 await bot_client.send_message(tcid, text=msg.text.markdown, reply_to_message_id=rtmid)
             else:
-                await bot_client.send_document(tcid, document=fpath, caption=ft if msg.caption else None, progress=prog, progress_args=(bot_client, did, pmsg.id, st), reply_to_message_id=rtmid)
+                await bot_client.send_document(tcid, document=fpath, caption=ft if msg.caption else None, progress=prog, progress_args=(bot_client, did, pmsg.id, st, "Uploading"), reply_to_message_id=rtmid)
 
         except Exception as e:
             try:

@@ -26,6 +26,12 @@ import re
 
 logger = logging.getLogger(__name__)
 
+# Owners bypass token verification gate
+def is_owner(uid: int) -> bool:
+    if isinstance(OWNER_ID, (list, tuple, set)):
+        return uid in OWNER_ID
+    return uid == OWNER_ID
+
 # Cache for token system status to avoid DB hit on every message
 TOKEN_SYSTEM_ENABLED = None
 TOKEN_SYSTEM_CACHE_TS = 0
@@ -384,6 +390,8 @@ async def token_system_filter(_, __, message):
         return False
     if not await is_token_system_enabled():
         return False
+    if is_owner(message.from_user.id):
+        return False
     if await is_user_verified(message.from_user.id):
         return False
     return True
@@ -428,6 +436,9 @@ async def global_verify_callback_gate(client, cq):
     if not await is_token_system_enabled():
         return
 
+    if is_owner(cq.from_user.id):
+        return
+
     # ✅ allow help & pay buttons
     for pat in ALLOWED_CALLBACKS:
         if re.match(pat, data):
@@ -452,15 +463,9 @@ async def global_verify_callback_gate(client, cq):
     raise StopPropagation
 
 
-def _is_owner(uid: int) -> bool:
-    if isinstance(OWNER_ID, (list, tuple, set)):
-        return uid in OWNER_ID
-    return uid == OWNER_ID
-
-
 @app.on_message(filters.command(["tokenon", "tokenoff", "tokenstatus"]) & filters.private)
 async def token_system_toggle(client, message):
-    if not message.from_user or not _is_owner(message.from_user.id):
+    if not message.from_user or not is_owner(message.from_user.id):
         return await message.reply_text("Only owner can use this command.")
 
     cmd = (message.command[0] or "").lower()

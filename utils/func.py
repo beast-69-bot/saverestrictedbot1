@@ -506,6 +506,27 @@ async def unban_user_db(user_id: int):
     await banned_users_collection.delete_one({"user_id": user_id})
 
 
+async def unban_all_users_db() -> int:
+    res = await banned_users_collection.delete_many({})
+    return int(getattr(res, "deleted_count", 0))
+
+
+async def get_banned_user_ids() -> list[int]:
+    ids = []
+    try:
+        cursor = banned_users_collection.find({}, {"_id": 0, "user_id": 1})
+        async for doc in cursor:
+            uid = doc.get("user_id")
+            if uid is not None:
+                try:
+                    ids.append(int(uid))
+                except Exception:
+                    pass
+    except Exception:
+        pass
+    return ids
+
+
 async def is_user_banned_db(user_id: int) -> bool:
     doc = await banned_users_collection.find_one({"user_id": user_id})
     return bool(doc)
