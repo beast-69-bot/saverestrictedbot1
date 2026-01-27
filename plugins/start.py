@@ -1,11 +1,13 @@
 from datetime import datetime
 from shared_client import app
-from pyrogram import filters
+from pyrogram import filters, StopPropagation
+import asyncio
 from pyrogram.errors import UserNotParticipant
 from pyrogram.types import BotCommand, InlineKeyboardButton, InlineKeyboardMarkup
 from config import LOG_GROUP, OWNER_ID, FORCE_SUB
 
-from utils.func import is_user_banned_db, save_user_data
+from utils.func import is_user_banned_db, save_user_data, unban_user_db, unban_all_users_db, reset_warnings_db, get_banned_user_ids, get_banned_count
+from pyrogram.errors import FloodWait
 from utils.func import users_collection, add_premium_user
 
 async def subscribe(client, message):
@@ -263,5 +265,70 @@ async def see_terms(client, callback_query):
         ]
     )
     await callback_query.message.edit_text(terms_text, reply_markup=buttons)
+
+
+@app.on_message(filters.command("unban") & filters.private, group=-3)
+async def unban_cmd(client, message):
+    if not message.from_user or message.from_user.id not in OWNER_ID:
+        return await message.reply_text("❌ Only owner can use this command.")
+
+    if len(message.command) < 2:
+        return await message.reply_text("✅ Use: `/unban user_id`", quote=True)
+
+    try:
+        user_id = int(message.command[1])
+    except Exception:
+        return await message.reply_text("❌ Invalid user_id. Example: `/unban 123456789`")
+
+    await unban_user_db(user_id)
+    await reset_warnings_db(user_id)
+    await message.reply_text(f"✅ Unbanned user: `{user_id}`\n⚠️ Warnings reset too.")
+    try:
+        await client.send_message(user_id, "✅ You have been unbanned. You can use the bot again.")
+    except FloodWait as e:
+        await asyncio.sleep(e.value)
+        try:
+            await client.send_message(user_id, "✅ You have been unbanned. You can use the bot again.")
+        except Exception:
+            pass
+    except Exception:
+        pass
+    raise StopPropagation
+
+
+@app.on_message(filters.command("unbanall") & filters.private, group=-3)
+async def unban_all_cmd(client, message):
+    if not message.from_user or message.from_user.id not in OWNER_ID:
+        return await message.reply_text("❌ Only owner can use this command.")
+
+    if len(message.command) < 2 or (message.command[1].lower() != "confirm"):
+        return await message.reply_text("⚠️ Use: `/unbanall confirm`", quote=True)
+
+    banned_ids = await get_banned_user_ids()
+    removed = await unban_all_users_db()
+    await message.reply_text(f"✅ Unbanned all users. Removed bans: `{removed}`")
+    for uid in banned_ids:
+        try:
+            await reset_warnings_db(uid)
+            await client.send_message(uid, "✅ You have been unbanned. You can use the bot again.")
+        except FloodWait as e:
+            await asyncio.sleep(e.value)
+            try:
+                await client.send_message(uid, "✅ You have been unbanned. You can use the bot again.")
+            except Exception:
+                pass
+        except Exception:
+            pass
+    raise StopPropagation
+
+
+@app.on_message(filters.command("unbanlist") & filters.private, group=-3)
+async def unban_list_cmd(client, message):
+    if not message.from_user or message.from_user.id not in OWNER_ID:
+        return await message.reply_text("❌ Only owner can use this command.")
+
+    count = await get_banned_count()
+    await message.reply_text(f"📋 Total banned users: `{count}`")
+    raise StopPropagation
 
 
