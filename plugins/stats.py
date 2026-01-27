@@ -40,11 +40,14 @@ async def status_handler(event):
         formatted_expiry = expiry_ist.strftime("%d-%b-%Y %I:%M:%S %p")
         premium_status = f"✅ Premium until {formatted_expiry} (IST)"
     
-    free_count = await get_free_batch_usage(user_id)
-    if FREE_BATCH_DAILY_LIMIT > 0:
-        free_batch_status = f"{free_count}/{FREE_BATCH_DAILY_LIMIT}"
+    if premium_details:
+        free_batch_status = "Unlimited"
     else:
-        free_batch_status = "Disabled"
+        free_count = await get_free_batch_usage(user_id)
+        if FREE_BATCH_DAILY_LIMIT > 0:
+            free_batch_status = f"{free_count}/{FREE_BATCH_DAILY_LIMIT}"
+        else:
+            free_batch_status = "Disabled"
 
     await event.respond(
         "**Your current status:**\n\n"
