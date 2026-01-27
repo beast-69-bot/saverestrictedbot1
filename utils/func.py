@@ -532,6 +532,13 @@ async def is_user_banned_db(user_id: int) -> bool:
     return bool(doc)
 
 
+async def get_banned_count() -> int:
+    try:
+        return int(await banned_users_collection.count_documents({}))
+    except Exception:
+        return 0
+
+
 # --- NEW COLLECTIONS ---
 access_users_collection = db["access_users"]     # bot access expiry store
 warnings_collection = db["warnings"]             # warnings store
