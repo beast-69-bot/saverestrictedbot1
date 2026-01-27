@@ -2,8 +2,8 @@ import os
 from datetime import timedelta, datetime
 from shared_client import client as bot_client
 from telethon import events
-from utils.func import get_premium_details, is_private_chat, get_display_name, get_user_data, premium_users_collection, is_premium_user, users_collection
-from config import OWNER_ID
+from utils.func import get_premium_details, is_private_chat, get_display_name, get_user_data, premium_users_collection, is_premium_user, users_collection, get_free_batch_usage
+from config import OWNER_ID, FREE_BATCH_DAILY_LIMIT
 import logging
 logging.basicConfig(format=
     '%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -40,10 +40,17 @@ async def status_handler(event):
         formatted_expiry = expiry_ist.strftime("%d-%b-%Y %I:%M:%S %p")
         premium_status = f"✅ Premium until {formatted_expiry} (IST)"
     
+    free_count = await get_free_batch_usage(user_id)
+    if FREE_BATCH_DAILY_LIMIT > 0:
+        free_batch_status = f"{free_count}/{FREE_BATCH_DAILY_LIMIT}"
+    else:
+        free_batch_status = "Disabled"
+
     await event.respond(
         "**Your current status:**\n\n"
         f"**Login Status:** {'✅ Active' if session_active else '❌ Inactive'}\n"
-        f"**Premium:** {premium_status}"
+        f"**Premium:** {premium_status}\n"
+        f"**Free Batch Today:** {free_batch_status}"
     )
 
 @bot_client.on(events.NewMessage(pattern='/transfer'))

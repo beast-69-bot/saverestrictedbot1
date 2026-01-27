@@ -428,6 +428,16 @@ async def check_and_increment_free_batch_limit(user_id: int, daily_limit: int) -
     return True
 
 
+async def get_free_batch_usage(user_id: int) -> int:
+    today = datetime.utcnow().date().isoformat()
+    doc = await users_collection.find_one({"user_id": user_id}) or {}
+    last_date = doc.get("free_batch_date")
+    count = int(doc.get("free_batch_count", 0))
+    if last_date != today:
+        count = 0
+    return count
+
+
 async def get_premium_details(user_id):
     try:
         user = await premium_users_collection.find_one({"user_id": user_id})
