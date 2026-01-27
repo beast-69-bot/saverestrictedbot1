@@ -4,9 +4,19 @@ from shared_client import start_client
 import importlib
 import os
 import sys
+from utils.func import cleanup_temp_images
+
+async def cleanup_loop(interval_seconds: int = 3600, max_age_hours: int = 24):
+    while True:
+        try:
+            cleanup_temp_images(directory=".", max_age_hours=max_age_hours)
+        except Exception:
+            pass
+        await asyncio.sleep(interval_seconds)
 
 async def load_and_run_plugins():
     await start_client()
+    asyncio.create_task(cleanup_loop())
     plugin_dir = "plugins"
     plugins = [f[:-3] for f in os.listdir(plugin_dir) if f.endswith(".py") and f != "__init__.py"]
 

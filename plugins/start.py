@@ -76,7 +76,10 @@ async def set(_, message):
         BotCommand("transfer", "🎁 Transfer premium"),
         BotCommand("add", "➕ Add premium (Owner)"),
         BotCommand("rem", "➖ Remove premium (Owner)"),
-        BotCommand("broadcast", "📣 Broadcast (Owner)")
+        BotCommand("broadcast", "📣 Broadcast (Owner)"),
+        BotCommand("tokenon", "✅ Enable token verification (Owner)"),
+        BotCommand("tokenoff", "❌ Disable token verification (Owner)"),
+        BotCommand("tokenstatus", "ℹ️ Token verification status (Owner)")
     ])
 
     await message.reply_text("✅ Bot commands updated successfully!")
@@ -109,7 +112,10 @@ help_pages = [
         "👑 **Owner Commands**\n"
         "• **/add user_id value unit** - Add premium (ex: `/add 123 1 week`)\n"
         "• **/rem user_id** - Remove premium\n"
-        "• **/broadcast** - Send message to all users\n\n"
+        "• **/broadcast** - Send message to all users\n"
+        "• **/tokenon** - Enable token verification\n"
+        "• **/tokenoff** - Disable token verification\n"
+        "• **/tokenstatus** - Token verification status\n\n"
         "📜 **Legal**\n"
         "• **/terms** - Terms & Conditions\n\n"
         "**__Powered by AZ BOTS ADDA__**"

@@ -26,6 +26,11 @@ import re
 
 logger = logging.getLogger(__name__)
 
+# Cache for token system status to avoid DB hit on every message
+TOKEN_SYSTEM_ENABLED = None
+TOKEN_SYSTEM_CACHE_TS = 0
+TOKEN_SYSTEM_CACHE_TTL = int(float(os.environ.get("TOKEN_SYSTEM_CACHE_TTL", 30)))
+
 # ─────────────────────────────────────────────
 # ENV / CONFIG
 # ─────────────────────────────────────────────
@@ -56,6 +61,7 @@ class VerifyDB:
         self._db = self._dbclient["verify-db"]
         self._verifydb = self._db[COLLECTION_NAME]
         self._tokendb = self._db[TOKEN_COLLECTION]
+        self._settings = self._db["settings"]
         try:
             self._tokendb.create_index("expireAt", expireAfterSeconds=0)
         except Exception:
@@ -98,6 +104,24 @@ class VerifyDB:
     async def delete_token(self, user_id: int):
         await self._tokendb.delete_one({"user_id": user_id})
 
+    async def get_token_system_enabled(self) -> bool:
+        doc = await self._settings.find_one({"key": "token_system"})
+        if doc is None:
+            return True
+        return bool(doc.get("enabled", True))
+
+    async def set_token_system_enabled(self, enabled: bool, by: int | None = None):
+        await self._settings.update_one(
+            {"key": "token_system"},
+            {"$set": {
+                "key": "token_system",
+                "enabled": bool(enabled),
+                "updated_at": int(time()),
+                "updated_by": by,
+            }},
+            upsert=True
+        )
+
 
 verifydb = VerifyDB()
 
@@ -135,6 +159,18 @@ async def is_user_verified(user_id: int) -> bool:
         return False
 
     return (time() - last) < VERIFY_EXPIRE
+
+
+async def is_token_system_enabled(force_refresh: bool = False) -> bool:
+    global TOKEN_SYSTEM_ENABLED, TOKEN_SYSTEM_CACHE_TS
+    now = int(time())
+    if force_refresh or TOKEN_SYSTEM_ENABLED is None or (now - TOKEN_SYSTEM_CACHE_TS) > TOKEN_SYSTEM_CACHE_TTL:
+        try:
+            TOKEN_SYSTEM_ENABLED = await verifydb.get_token_system_enabled()
+        except Exception:
+            TOKEN_SYSTEM_ENABLED = True
+        TOKEN_SYSTEM_CACHE_TS = now
+    return bool(TOKEN_SYSTEM_ENABLED)
 
 
 async def get_short_url(longurl: str, shortener_site=SHORTLINK_SITE, shortener_api=SHORTLINK_API) -> str:
@@ -346,6 +382,8 @@ async def validate_token(client, message, data: str):
 async def token_system_filter(_, __, message):
     if message.from_user is None:
         return False
+    if not await is_token_system_enabled():
+        return False
     if await is_user_verified(message.from_user.id):
         return False
     return True
@@ -387,6 +425,9 @@ async def global_verify_callback_gate(client, cq):
 
     data = cq.data or ""
 
+    if not await is_token_system_enabled():
+        return
+
     # ✅ allow help & pay buttons
     for pat in ALLOWED_CALLBACKS:
         if re.match(pat, data):
@@ -409,3 +450,29 @@ async def global_verify_callback_gate(client, cq):
         await send_verification(client, cq.message)
 
     raise StopPropagation
+
+
+def _is_owner(uid: int) -> bool:
+    if isinstance(OWNER_ID, (list, tuple, set)):
+        return uid in OWNER_ID
+    return uid == OWNER_ID
+
+
+@app.on_message(filters.command(["tokenon", "tokenoff", "tokenstatus"]) & filters.private)
+async def token_system_toggle(client, message):
+    if not message.from_user or not _is_owner(message.from_user.id):
+        return await message.reply_text("Only owner can use this command.")
+
+    cmd = (message.command[0] or "").lower()
+    if cmd == "tokenstatus":
+        enabled = await is_token_system_enabled(force_refresh=True)
+        status = "ON" if enabled else "OFF"
+        return await message.reply_text(f"Token verification is currently {status}.")
+
+    enabled = cmd == "tokenon"
+    await verifydb.set_token_system_enabled(enabled, by=message.from_user.id)
+    global TOKEN_SYSTEM_ENABLED, TOKEN_SYSTEM_CACHE_TS
+    TOKEN_SYSTEM_ENABLED = enabled
+    TOKEN_SYSTEM_CACHE_TS = int(time())
+    status = "enabled" if enabled else "disabled"
+    await message.reply_text(f"Token verification {status}.")
