@@ -483,6 +483,11 @@ async def process_msg(bot_client: Client, user_client: Client, msg: Message, did
 
     except Exception as e:
         return f"Error: {str(e)[:60]}"
+    finally:
+        try:
+            cleanup_temp_images(directory=".", max_age_hours=0)
+        except Exception:
+            pass
 
 # --------------------------------------------------------------------------
 # Command handlers (KEEP commands)
