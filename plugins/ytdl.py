@@ -57,9 +57,17 @@ def resolve_cookies(cookies_env_var: Optional[str]):
 
     # If passed name, map to imported config variables first
     if cookies_env_var == "YT_COOKIES":
-        return YT_COOKIES
+        cookies_env_var = YT_COOKIES
     if cookies_env_var == "INSTA_COOKIES":
-        return INSTA_COOKIES
+        cookies_env_var = INSTA_COOKIES
+
+    # If it's a file path, load the file content
+    try:
+        if cookies_env_var and os.path.isfile(cookies_env_var):
+            with open(cookies_env_var, "r", encoding="utf-8", errors="ignore") as f:
+                return f.read()
+    except Exception:
+        pass
 
     # fallback: environment variable lookup
     return os.environ.get(cookies_env_var)
