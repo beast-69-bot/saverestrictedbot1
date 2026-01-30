@@ -61,27 +61,31 @@ async def set(_, message):
         return
 
     await app.set_bot_commands([
-        BotCommand("start", "🚀 Start"),
-        BotCommand("help", "📖 How to use"),
-        BotCommand("login", "🔐 Login (private chats)"),
-        BotCommand("logout", "🚪 Logout"),
-        BotCommand("setbot", "🤖 Add your bot token"),
-        BotCommand("rembot", "🧹 Remove your bot token"),
-        BotCommand("single", "🎯 Extract single post"),
-        BotCommand("batch", "📦 Extract in bulk"),
-        BotCommand("stop", "🛑 Stop active batch"),
-        BotCommand("cancel", "❌ Cancel current step"),
-        BotCommand("settings", "⚙️ Customize caption/rename/thumb"),
-        BotCommand("status", "📌 My status / plan"),
-        BotCommand("plan", "💎 Premium plans"),
-        BotCommand("terms", "📜 Terms"),
-        BotCommand("transfer", "🎁 Transfer premium"),
-        BotCommand("add", "➕ Add premium (Owner)"),
-        BotCommand("rem", "➖ Remove premium (Owner)"),
-        BotCommand("broadcast", "📣 Broadcast (Owner)"),
-        BotCommand("tokenon", "✅ Enable token verification (Owner)"),
-        BotCommand("tokenoff", "❌ Disable token verification (Owner)"),
-        BotCommand("tokenstatus", "ℹ️ Token verification status (Owner)")
+        BotCommand("start", "?? Start"),
+        BotCommand("help", "?? How to use"),
+        BotCommand("login", "?? Login (private chats)"),
+        BotCommand("logout", "?? Logout"),
+        BotCommand("setbot", "?? Add your bot token"),
+        BotCommand("rembot", "?? Remove your bot token"),
+        BotCommand("single", "?? Extract single post"),
+        BotCommand("batch", "?? Extract in bulk"),
+        BotCommand("stop", "?? Stop active batch"),
+        BotCommand("cancel", "? Cancel current step"),
+        BotCommand("settings", "?? Customize caption/rename/thumb"),
+        BotCommand("status", "?? My status / plan"),
+        BotCommand("plan", "?? Premium plans"),
+        BotCommand("terms", "?? Terms"),
+        BotCommand("transfer", "?? Transfer premium"),
+        BotCommand("add", "? Add premium (Owner)"),
+        BotCommand("rem", "? Remove premium (Owner)"),
+        BotCommand("broadcast", "?? Broadcast (Owner)"),
+        BotCommand("unban", "? Unban user (Owner)"),
+        BotCommand("unbanall", "?? Unban all users (Owner)"),
+        BotCommand("unbanlist", "?? Banned count (Owner)"),
+        BotCommand("killall", "? Kill all tasks (Owner)"),
+        BotCommand("tokenon", "? Enable token verification (Owner)"),
+        BotCommand("tokenoff", "? Disable token verification (Owner)"),
+        BotCommand("tokenstatus", "?? Token verification status (Owner)")
     ])
 
     await message.reply_text("✅ Bot commands updated successfully!")
@@ -115,6 +119,10 @@ help_pages = [
         "• **/add user_id value unit** - Add premium (ex: `/add 123 1 week`)\n"
         "• **/rem user_id** - Remove premium\n"
         "• **/broadcast** - Send message to all users\n"
+        "? **/unban** - Unban a user\n"
+        "? **/unbanall** - Unban all users\n"
+        "? **/unbanlist** - Total banned users\n"
+        "? **/killall** - Kill all active tasks\n"
         "• **/tokenon** - Enable token verification\n"
         "• **/tokenoff** - Disable token verification\n"
         "• **/tokenstatus** - Token verification status\n\n"
@@ -330,5 +338,3 @@ async def unban_list_cmd(client, message):
     count = await get_banned_count()
     await message.reply_text(f"📋 Total banned users: `{count}`")
     raise StopPropagation
-
-
