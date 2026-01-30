@@ -1,5 +1,5 @@
 from pyrogram import filters
-from pyrogram.errors import FloodWait
+from pyrogram.errors import FloodWait, MessageNotModified
 import asyncio
 from shared_client import app
 from config import OWNER_ID
@@ -30,6 +30,90 @@ def is_owner(uid: int) -> bool:
     if isinstance(OWNER_ID, (list, tuple, set)):
         return uid in OWNER_ID
     return uid == OWNER_ID
+
+
+# /bstats live updater tasks (per chat)
+BSTATS_TASKS = {}
+BSTATS_INTERVAL_SEC = 5
+BSTATS_MAX_LOOPS = 120  # 10 minutes at 5s
+
+
+def _bstats_bar(pct: int, width: int = 20) -> str:
+    if pct < 0:
+        pct = 0
+    if pct > 100:
+        pct = 100
+    filled = int(round(width * (pct / 100.0)))
+    if filled > width:
+        filled = width
+    return "█" * filled + "░" * (width - filled)
+
+
+def _bstats_render(active, pending, ytdl) -> str:
+    running = (len(active) + len(pending) + len(ytdl)) > 0
+    header = [
+        "━━━━━━━━━━━━━━━━━━━━",
+        "📊 **TASK REPORT**",
+        "━━━━━━━━━━━━━━━━━━━━",
+        f"`{'🟢 RUNNING' if running else '🟡 IDLE'}`  `📦 {len(active)} Batches`  `⏳ {len(pending)} Pending`  `⬇️ {len(ytdl)} YTDL`",
+        "",
+    ]
+
+    body = []
+    if active:
+        for uid_str, info in active.items():
+            try:
+                uid = int(uid_str)
+            except Exception:
+                uid = uid_str
+            total = int(info.get("total") or 0)
+            current = int(info.get("current") or 0)
+            success = int(info.get("success") or 0)
+            cancel = bool(info.get("cancel_requested"))
+            pct = int((current / total) * 100) if total > 0 else 0
+            status = "🛑cancel" if cancel else "▶️run"
+            body.append(f"**{uid}**  `{pct}%`  `{current}/{total}`  `✅{success}`  `{status}`")
+            body.append(f"`{_bstats_bar(pct)}`")
+            body.append("")
+
+    return "\n".join(header + body).rstrip()
+
+
+async def _bstats_live_update(client, msg):
+    # lazy import to avoid circular import with plugins.batch
+    try:
+        from plugins import batch as batch_mod
+        from plugins import ytdl as ytdl_mod
+    except Exception:
+        try:
+            await msg.edit_text("bstats failed: cannot load modules.")
+        except Exception:
+            pass
+        return
+
+    chat_id = msg.chat.id
+    for _ in range(BSTATS_MAX_LOOPS):
+        active = batch_mod.ACTIVE_USERS or {}
+        pending = batch_mod.Z or {}
+        ytdl = ytdl_mod.ongoing_downloads or {}
+        text = _bstats_render(active, pending, ytdl)
+        try:
+            await msg.edit_text(text, disable_web_page_preview=True)
+        except MessageNotModified:
+            pass
+        except Exception:
+            break
+
+        if not active and not pending and not ytdl:
+            break
+
+        await asyncio.sleep(BSTATS_INTERVAL_SEC)
+
+    try:
+        if BSTATS_TASKS.get(chat_id) is asyncio.current_task():
+            BSTATS_TASKS.pop(chat_id, None)
+    except Exception:
+        pass
 
 
 @app.on_message(filters.command("unban") & filters.private)
@@ -155,3 +239,20 @@ async def unban_list_cmd(client, message):
 
     count = await get_banned_count()
     return await message.reply_text(f"📋 Total banned users: `{count}`")
+
+
+@app.on_message(filters.command("bstats") & filters.private)
+async def bstats_cmd(client, message):
+    if not message.from_user or not is_owner(message.from_user.id):
+        return await message.reply_text("❌ Only owner can use this command.")
+
+    prev = BSTATS_TASKS.pop(message.chat.id, None)
+    if prev:
+        try:
+            prev.cancel()
+        except Exception:
+            pass
+
+    msg = await message.reply_text("Generating task report...")
+    task = asyncio.create_task(_bstats_live_update(client, msg))
+    BSTATS_TASKS[message.chat.id] = task

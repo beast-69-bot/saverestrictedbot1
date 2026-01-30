@@ -83,6 +83,7 @@ async def set(_, message):
         BotCommand("unbanall", "?? Unban all users (Owner)"),
         BotCommand("unbanlist", "?? Banned count (Owner)"),
         BotCommand("killall", "? Kill all tasks (Owner)"),
+        BotCommand("bstats", "? Task report (Owner)"),
         BotCommand("tokenon", "? Enable token verification (Owner)"),
         BotCommand("tokenoff", "? Disable token verification (Owner)"),
         BotCommand("tokenstatus", "?? Token verification status (Owner)")
